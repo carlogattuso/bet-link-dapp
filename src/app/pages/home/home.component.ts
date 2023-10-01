@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MetamaskService } from 'src/app/services/metamask.service';
 
 @Component({
   selector: 'app-home',
@@ -7,4 +8,10 @@ import { Component } from '@angular/core';
 })
 export class HomeComponent {
 
+  constructor(private metamask: MetamaskService) { }
+
+  connectMetamask() {
+    this.metamask.connectWallet();
+    console.log('CONNECTED WALLET: ', localStorage.getItem('WALLET'));
+  }
 }
