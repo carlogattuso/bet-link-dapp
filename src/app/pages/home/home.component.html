@@ -1,1 +1,31 @@
-<p>home works!</p>
+<div class="surface-section p-2">
+    <p-card header="Matches">
+        <p-table [value]="fixtures.response" [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [rowsPerPageOptions]="[5, 10, 15]">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width:25%">Date</th>
+                    <th style="width:25%">Home</th>
+                    <th style="width:25%">Away</th>
+                    <th style="width:25%">Bet</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-match>
+                <tr>
+                    <td>{{ match.fixture.date }}</td>
+                    <td>{{ match.teams.away.name }}</td>
+                    <td>{{ match.teams.home.name }}</td>
+                    <td><p-button label="Bet" icon="pi pi-check" styleClass="p-button-sm"></p-button></td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="paginatorleft">
+                <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+                <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text"></p-button>
+            </ng-template>
+        </p-table>
+    </p-card>
+</div>
