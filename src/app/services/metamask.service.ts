@@ -34,23 +34,26 @@ export class MetamaskService {
     }
   }
 
-  public connect() {
-    window.ethereum.request({ method: 'eth_requestAccounts' }).then((accounts: string[]) => {
-      console.log('ACCOUNTS CONNECT: '+accounts[0]);
-      if(accounts.length === 0) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Error al conectar Metamask!'
-        });
-      } else {
-        this.setWallet(accounts[0]);
-        window.ethereum.request({ method: 'eth_chainId' }).then((chainId: string) => {
-          this.setChainId(chainId);
-        });
-      }
+  public async connect(): Promise<string> {
+    return new Promise((resolve, reject): void => {
+      window.ethereum.request({ method: 'eth_requestAccounts' }).then((accounts: string[]) => {
+        if(accounts.length === 0) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Error al conectar Metamask!'
+          });
+        } else {
+          this.setWallet(accounts[0]);
+          window.ethereum.request({ method: 'eth_chainId' }).then((chainId: string) => {
+            this.setChainId(chainId);
+            resolve(accounts[0]);
+          });
+        }
+      });
     });
   }
+
 
   public getWallet() {
     return sessionStorage.getItem('WALLET');
@@ -75,7 +78,7 @@ export class MetamaskService {
   //       this.logout();
   //     } else {
   //       this.setWallet(accounts[0]);
-        
+
   //     }
   //   });
   // }
@@ -84,7 +87,7 @@ export class MetamaskService {
   private setupMetamaskListeners() {
     if (typeof window.ethereum !== 'undefined') {
       window.ethereum.on('accountsChanged', async (accounts: string[]) => {
-        console.log('ACCOUNTS EVENT: '+accounts);
+        console.log('ACCOUNTS EVENT: ' + accounts);
         if (accounts.length === 0) {
           // Handle disconnected account
           this.logout();
@@ -94,7 +97,7 @@ export class MetamaskService {
           this.setWallet(newAddress);
         }
       });
-  
+
       window.ethereum.on('chainChanged', (chainId: string) => {
         // Handle network change
         this.setChainId(chainId);

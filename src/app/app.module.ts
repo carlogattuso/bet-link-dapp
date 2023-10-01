@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { StyleClassModule } from 'primeng/styleclass';
+import { InputTextModule } from 'primeng/inputtext';
+import { CheckboxModule } from 'primeng/checkbox';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,10 @@ import { StyleClassModule } from 'primeng/styleclass';
     ReactiveFormsModule,
     ButtonModule,
     RippleModule,
-    StyleClassModule
+    StyleClassModule,
+    InputTextModule,
+    CheckboxModule,
+    RadioButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

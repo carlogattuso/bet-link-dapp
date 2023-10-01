@@ -14,5 +14,8 @@ export class AppComponent {
   ngOnInit() {
     this.isLoggedIn = sessionStorage.getItem('WALLET') != null;
   }
-  
+
+  getAccount(event: boolean) {
+    this.isLoggedIn = event;
+  }
 }
