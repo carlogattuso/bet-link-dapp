@@ -11,7 +11,7 @@ export class HomeComponent implements OnInit {
 
   fixtures: any;
 
-  constructor(private oddsService: OddsService, private metamask: MetamaskService) {
+  constructor(private oddsService: OddsService) {
 
   }
 
@@ -26,8 +26,4 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  connectMetamask() {
-    this.metamask.connect();
-  }
-  
 }

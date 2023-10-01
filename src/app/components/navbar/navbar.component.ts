@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MetamaskService } from 'src/app/services/metamask.service';
 
 @Component({
   selector: 'app-navbar',
@@ -7,4 +8,12 @@ import { Component } from '@angular/core';
 })
 export class NavbarComponent {
 
+  constructor(private metamask: MetamaskService) {
+    
+  }
+
+  connectMetamask() {
+    this.metamask.connect();
+  }
+  
 }
