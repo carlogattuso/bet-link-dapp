@@ -11,7 +11,6 @@ export class HomeComponent {
   constructor(private metamask: MetamaskService) { }
 
   connectMetamask() {
-    this.metamask.connectWallet();
-    console.log('CONNECTED WALLET: ', localStorage.getItem('WALLET'));
+    this.metamask.connect();
   }
 }

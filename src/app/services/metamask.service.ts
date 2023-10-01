@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { MetaMaskSDK } from '@metamask/sdk';
+import Web3 from 'web3';
+import Swal from 'sweetalert2';
 
 // This function detects most providers injected at window.ethereum.
-import detectEthereumProvider from '@metamask/detect-provider';
+// import detectEthereumProvider from '@metamask/detect-provider';
+
+declare let window: any;
 
 @Injectable({
   providedIn: 'root',
@@ -14,66 +17,93 @@ import detectEthereumProvider from '@metamask/detect-provider';
 
 export class MetamaskService {
 
-  //Service constructor
+  web3: any = null;
+  get web3Instance() { return this.web3; }
+
   constructor() {
-    this.setupMetamaskListeners(); // Set up a listener for changes in connection status
-  }
-
-  public getWallet() {
-    localStorage.getItem('WALLET');
-  }
-
-  public connectWallet() {
-    if(window.ethereum !== undefined) {
-      window.ethereum.request({ method: 'eth_requestAccounts' }).then((accounts: any) => {
-        const account = accounts[0];
-        localStorage.setItem('WALLET', account);
-      })
-      .catch((err) => {
-        if (err.code === 4001) {
-          // EIP-1193 userRejectedRequest error
-          // If this happens, the user rejected the connection request.
-          console.log('Please connect to MetaMask.');
-        } else {
-          console.error(err);
-        }
+    if (typeof window.ethereum !== 'undefined') {
+      this.web3 = new Web3(window.ethereum);
+      window.ethereum.enable(); // get permission to access accounts
+      this.setupMetamaskListeners();
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'No tienes instalado MetaMask!'
       });
     }
   }
+
+  public connect() {
+    window.ethereum.request({ method: 'eth_requestAccounts' }).then((accounts: string[]) => {
+      console.log('ACCOUNTS CONNECT: '+accounts[0]);
+      if(accounts.length === 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Error al conectar Metamask!'
+        });
+      } else {
+        this.setWallet(accounts[0]);
+        window.ethereum.request({ method: 'eth_chainId' }).then((chainId: string) => {
+          this.setChainId(chainId);
+        });
+      }
+    });
+  }
+
+  public getWallet() {
+    return sessionStorage.getItem('WALLET');
+  }
+
+  public setWallet(address: string) {
+    sessionStorage.setItem('WALLET', address);
+  }
+
+  public getChainId() {
+    return sessionStorage.getItem('CHAIN_ID');
+  }
+
+  public setChainId(chainId: string) {
+    sessionStorage.setItem('CHAIN_ID', chainId);
+  }
+
+  // private async handleAccountsChanged() {
+  //   const accounts: string[] = await window.ethereum.request({ method: 'eth_requestAccounts' });
+  //   window.ethereum.on('accountsChanged', (accounts: string[]) => {
+  //     if(accounts.length === 0) {
+  //       this.logout();
+  //     } else {
+  //       this.setWallet(accounts[0]);
+        
+  //     }
+  //   });
+  // }
 
   // Setup listeners for account or network change
   private setupMetamaskListeners() {
     if (typeof window.ethereum !== 'undefined') {
-      window.ethereum.on('accountsChanged', function(accounts: any) {
+      window.ethereum.on('accountsChanged', async (accounts: string[]) => {
+        console.log('ACCOUNTS EVENT: '+accounts);
         if (accounts.length === 0) {
           // Handle disconnected account
-          localStorage.setItem('WALLET', '');
+          this.logout();
         } else {
           // Handle account change
           const newAddress = accounts[0];
-          localStorage.setItem('WALLET', newAddress);
+          this.setWallet(newAddress);
         }
+      });
+  
+      window.ethereum.on('chainChanged', (chainId: string) => {
+        // Handle network change
+        this.setChainId(chainId);
       });
     }
   }
 
-  //Check Metamask provider in device
-  // private async checkMetamaskProvider() {
-  //   // This returns the provider, or null if it wasn't detected.
-  //   const provider = await detectEthereumProvider();
-
-  //   if (provider) {
-  //     // From now on, this should always be true: provider === window.ethereum
-  //     // If the provider returned by detectEthereumProvider isn't the same as
-  //     // window.ethereum, something is overwriting it – perhaps another wallet.
-  //     if (provider !== window.ethereum) {
-  //       console.error('Do you have multiple wallets installed?');
-  //     }
-
-  //     return true;
-  //   } else {
-  //     console.log('Please install MetaMask!');
-  //     return false;
-  //   }
-  // }
+  logout() {
+    sessionStorage.removeItem('WALLET');
+    sessionStorage.removeItem('CHAIN_ID');
+  }
 }
