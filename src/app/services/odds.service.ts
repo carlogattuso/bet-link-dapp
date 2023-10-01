@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
+
+import { ApiResponse, Match } from '../models/fixture.model';
 import matches from './matches.json';
 
 @Injectable({
@@ -16,8 +18,9 @@ export class OddsService {
 
   constructor(private http: HttpClient) { }
 
-  getOdds(): Observable<any> {
-    return of(matches);
+  getOdds(): Observable<Match[]> {
+    const apiResponse: ApiResponse = matches;
+    return of(apiResponse.response);
     /*return this.http.get<any>(this.url, this.httpOptions).pipe(
       tap((_: HttpEvent<string>) => console.log(`get odds`)),
       catchError(this.handleError<any>('error'))

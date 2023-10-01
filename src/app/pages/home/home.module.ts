@@ -11,6 +11,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { OddsService } from 'src/app/services/odds.service';
 import { TableModule } from 'primeng/table';
 import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { CheckboxModule } from 'primeng/checkbox';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @NgModule({
   declarations: [
@@ -24,7 +29,12 @@ import { CardModule } from 'primeng/card';
     ButtonModule,
     RippleModule,
     TableModule,
-    CardModule
+    CardModule,
+    DialogModule,
+    InputTextModule,
+    CheckboxModule,
+    RadioButtonModule,
+    InputNumberModule
   ],
   providers: [
     OddsService

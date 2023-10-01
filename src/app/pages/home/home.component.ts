@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OddsService } from 'src/app/services/odds.service';
-import { MetamaskService } from 'src/app/services/metamask.service';
+import { ApiResponse, Match } from 'src/app/models/fixture.model';
 
 @Component({
   selector: 'app-home',
@@ -9,7 +9,15 @@ import { MetamaskService } from 'src/app/services/metamask.service';
 })
 export class HomeComponent implements OnInit {
 
-  fixtures: any;
+  fixtures!: Match[];
+
+  selectedMatch!: Match;
+
+  visible: boolean = false;
+
+  value1: number = 0;
+
+  value2: number = 0;
 
   constructor(private oddsService: OddsService) {
 
@@ -17,13 +25,17 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.oddsService.getOdds().subscribe({
-      next: (data): void => {
+      next: (data: Match[]): void => {
         this.fixtures = data;
       },
       error: (): void => {
         console.log('error');
       }
     });
+  }
+
+  showDialog() {
+    this.visible = true;
   }
 
 }
