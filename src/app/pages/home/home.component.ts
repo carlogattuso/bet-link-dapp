@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OddsService } from 'src/app/services/odds.service';
+import { MetamaskService } from 'src/app/services/metamask.service';
 
 @Component({
   selector: 'app-home',
@@ -10,18 +11,23 @@ export class HomeComponent implements OnInit {
 
   fixtures: any;
 
-  constructor(private oddsService: OddsService) {
+  constructor(private oddsService: OddsService, private metamask: MetamaskService) {
 
   }
 
   ngOnInit(): void {
-      this.oddsService.getOdds().subscribe({
-        next: (data): void => {
-          this.fixtures = data;
-        },
-        error: (): void => {
-          console.log('error');
-        }
-      });
+    this.oddsService.getOdds().subscribe({
+      next: (data): void => {
+        this.fixtures = data;
+      },
+      error: (): void => {
+        console.log('error');
+      }
+    });
   }
+
+  connectMetamask() {
+    this.metamask.connect();
+  }
+  
 }
